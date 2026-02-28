@@ -1,0 +1,25 @@
+{
+  "name": "palette-tokens",
+  "version": "1.0.0",
+  "description": "Generate UI color palettes from a single primary hex color",
+  "type": "module",
+  "main": "index.js",
+  "bin": {
+    "palette-tokens": "./index.js"
+  },
+  "scripts": {
+    "test": "node index.js \"#6366f1\" --preview --format both"
+  },
+  "keywords": [
+    "color",
+    "palette",
+    "tokens",
+    "css",
+    "design-system"
+  ],
+  "license": "ISC",
+  "dependencies": {
+    "culori": "^4.0.2",
+    "dittotones": "^0.10.0"
+  }
+}
