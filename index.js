@@ -28,18 +28,22 @@ const dark = getFlag('dark');
 const preview = getFlag('preview');
 const scheme = getOption('scheme', 'single');
 const format = getOption('format', 'css');
+const hueOpt = getOption('hue', null);
 
-if (showHelp || args.length === 0) {
+if (showHelp) {
   console.log(`
-palette-tokens — Generate UI color palettes from a primary hex color
+palette-tokens — Generate UI color palettes from a hue or hex color
 
 Usage:
-  palette-tokens <hex> [options]
+  palette-tokens [hue|hex] [options]
 
 Arguments:
-  <hex>           Primary color in hex format (e.g. "#6366f1")
+  [hue]           Hue value 0–360 (e.g. 240)
+  [hex]           Hex color (e.g. 6366f1)
+  (no argument)   Random hue
 
 Options:
+  --hue <value>   Hue value 0–360 (alternative to positional arg)
   --scheme <type> Color scheme: single, analogous, complementary (default: single)
   --dark          Output dark mode tokens
   --format <fmt>  Output format: css, json, both (default: css)
@@ -47,21 +51,45 @@ Options:
   --help          Show this help message
 
 Examples:
-  palette-tokens "#6366f1"
-  palette-tokens "#10b981" --scheme analogous --dark --preview
-  palette-tokens "#f59e0b" --format both --preview
+  palette-tokens              # random hue
+  palette-tokens 240          # hue 240 (blue)
+  palette-tokens 6366f1       # from hex
+  palette-tokens --hue 120 --scheme analogous --preview
 `);
   process.exit(0);
 }
 
-const hexInput = args[0].replace(/^['"]|['"]$/g, '');
+// ── Resolve primary hex ───────────────────────────────────────────────────────
 
-if (!/^#?[0-9a-fA-F]{6}$/.test(hexInput)) {
-  console.error(`Error: Invalid hex color "${hexInput}". Use format like "#6366f1" or "6366f1".`);
-  process.exit(1);
+function hueToHex(hue) {
+  return formatHex({ mode: 'oklch', l: 0.55, c: 0.2, h: hue });
 }
 
-const primaryHex = hexInput.startsWith('#') ? hexInput : `#${hexInput}`;
+let primaryHex;
+let resolvedHue;
+
+const positional = args[0] ? String(args[0]).replace(/^['"]|['"]$/g, '') : null;
+
+if (hueOpt !== null) {
+  // --hue flag takes precedence
+  resolvedHue = parseFloat(hueOpt) % 360;
+  primaryHex = hueToHex(resolvedHue);
+} else if (positional !== null && /^\d+(\.\d+)?$/.test(positional)) {
+  // Positional numeric → treat as hue
+  resolvedHue = parseFloat(positional) % 360;
+  primaryHex = hueToHex(resolvedHue);
+} else if (positional !== null && /^#?[0-9a-fA-F]{6}$/.test(positional)) {
+  // Positional hex
+  primaryHex = positional.startsWith('#') ? positional : `#${positional}`;
+} else if (positional !== null) {
+  console.error(`Error: Invalid input "${positional}". Use a hue (0–360) or hex color.`);
+  process.exit(1);
+} else {
+  // No argument → random hue
+  resolvedHue = Math.floor(Math.random() * 360);
+  primaryHex = hueToHex(resolvedHue);
+  if (process.stderr.isTTY) process.stderr.write(`hue: ${resolvedHue}\n`);
+}
 
 if (!['single', 'analogous', 'complementary'].includes(scheme)) {
   console.error(`Error: Invalid scheme "${scheme}". Use single, analogous, or complementary.`);
@@ -201,6 +229,7 @@ function buildJSON() {
     mode: dark ? 'dark' : 'light',
     scheme,
     input: primaryHex,
+    ...(resolvedHue != null && { hue: resolvedHue }),
     tokens,
     scales,
     wcag,
@@ -235,7 +264,8 @@ const reset = '\x1b[0m';
 
 function outputPreview() {
   console.log('\n── Palette Preview ─────────────────────────────────────');
-  console.log(`   Mode: ${dark ? 'dark' : 'light'}  |  Scheme: ${scheme}  |  Input: ${primaryHex}\n`);
+  const inputLabel = resolvedHue != null ? `hue ${resolvedHue} → ${primaryHex}` : primaryHex;
+  console.log(`   Mode: ${dark ? 'dark' : 'light'}  |  Scheme: ${scheme}  |  Input: ${inputLabel}\n`);
 
   // Role tokens
   console.log('  Tokens:');
