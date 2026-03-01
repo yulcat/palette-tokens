@@ -32,32 +32,32 @@ palette-tokens [hue|hex] [options]
 
 | Argument | Description |
 |----------|-------------|
-| (없음) | 랜덤 hue 자동 생성 |
-| `240` | hue 값 (0–360) |
-| `6366f1` | hex 색상 |
+| (none) | Random hue |
+| `240` | Hue value (0–360) |
+| `6366f1` | Hex color |
 
 | Option | Values | Default | Description |
 |--------|--------|---------|-------------|
-| `--hue <value>` | 0–360 | — | hue 값 (positional 대신 사용 가능) |
-| `--scheme` | `single` `analogous` `complementary` | `single` | 색상 조합 방식 |
-| `--dark` | flag | off | 다크 모드 토큰 출력 |
-| `--format` | `css` `json` `both` | `css` | 출력 형식 |
-| `--preview` | flag | off | 터미널 컬러 프리뷰 |
+| `--hue <value>` | 0–360 | — | Hue value (alternative to positional arg) |
+| `--scheme` | `single` `analogous` `complementary` | `single` | Color scheme type |
+| `--dark` | flag | off | Output dark mode tokens |
+| `--format` | `css` `json` `both` | `css` | Output format |
+| `--preview` | flag | off | Terminal color preview |
 
 ### Examples
 
 ```bash
-# 랜덤 팔레트
+# Random palette
 palette-tokens
 
-# hue로 지정
+# Specify by hue
 palette-tokens 240
 palette-tokens --hue 120 --scheme analogous --preview
 
-# hex로 지정
+# Specify by hex
 palette-tokens 6366f1
 
-# 다크 모드 + JSON
+# Dark mode + JSON
 palette-tokens 240 --dark --format json
 ```
 
