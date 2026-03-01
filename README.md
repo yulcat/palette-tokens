@@ -7,8 +7,12 @@ Built with [dittotones](https://github.com/nicedoc/dittotones) and [culori](http
 ## Install
 
 ```bash
-npm install
-npm link   # optional, to use as global CLI
+# Global install (recommended)
+npm install -g https://github.com/yulcat/palette-tokens
+
+# Or clone and link
+git clone https://github.com/yulcat/palette-tokens
+cd palette-tokens && npm install && npm link
 ```
 
 ## Usage
@@ -16,6 +20,8 @@ npm link   # optional, to use as global CLI
 ```bash
 palette-tokens <hex> [options]
 ```
+
+`#` prefix is optional — both `6366f1` and `#6366f1` work.
 
 ### Options
 
@@ -30,17 +36,30 @@ palette-tokens <hex> [options]
 ### Examples
 
 ```bash
-# Basic CSS output
-palette-tokens "#6366f1"
+# Basic CSS output (no # needed)
+palette-tokens 6366f1
 
 # Dark mode with preview
-palette-tokens "#10b981" --dark --preview
+palette-tokens 10b981 --dark --preview
 
 # Analogous scheme, JSON output
-palette-tokens "#f59e0b" --scheme analogous --format json
+palette-tokens f59e0b --scheme analogous --format json
 
 # Complementary scheme, all outputs
-palette-tokens "#e11d48" --scheme complementary --format both --preview
+palette-tokens e11d48 --scheme complementary --format both --preview
+```
+
+## Use with Claude Code / AI Agents
+
+A `SKILL.md` is available for use with [OpenClaw](https://openclaw.ai) and Claude Code:
+
+```bash
+# OpenClaw
+npx skills add github:yulcat/palette-tokens
+
+# Claude Code — add to CLAUDE.md or .claude/skills/
+curl -o .claude/skills/palette-tokens.md \
+  https://raw.githubusercontent.com/yulcat/palette-tokens/master/SKILL.md
 ```
 
 ### Output
