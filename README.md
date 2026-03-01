@@ -18,10 +18,10 @@ cd palette-tokens && npm install && npm link
 ## Usage
 
 ```bash
-palette-tokens <hex> [options]
+palette-tokens [hue|hex] [options]
 ```
 
-`#` prefix is optional — both `6366f1` and `#6366f1` work.
+Hue (0–360), hex, or no argument (random hue) all accepted.
 
 ### Options
 

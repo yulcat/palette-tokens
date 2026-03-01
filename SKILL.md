@@ -27,28 +27,38 @@ After install, `palette-tokens` is available globally.
 ## Usage
 
 ```bash
-palette-tokens <hex> [options]
+palette-tokens [hue|hex] [options]
 ```
+
+| Argument | Description |
+|----------|-------------|
+| (없음) | 랜덤 hue 자동 생성 |
+| `240` | hue 값 (0–360) |
+| `6366f1` | hex 색상 |
 
 | Option | Values | Default | Description |
 |--------|--------|---------|-------------|
-| `--scheme` | `single` `analogous` `complementary` | `single` | Color scheme type |
-| `--dark` | flag | off | Output dark mode tokens |
-| `--format` | `css` `json` `both` | `css` | Output format |
-| `--preview` | flag | off | Terminal color preview |
+| `--hue <value>` | 0–360 | — | hue 값 (positional 대신 사용 가능) |
+| `--scheme` | `single` `analogous` `complementary` | `single` | 색상 조합 방식 |
+| `--dark` | flag | off | 다크 모드 토큰 출력 |
+| `--format` | `css` `json` `both` | `css` | 출력 형식 |
+| `--preview` | flag | off | 터미널 컬러 프리뷰 |
 
 ### Examples
 
 ```bash
-# Basic CSS tokens
+# 랜덤 팔레트
+palette-tokens
+
+# hue로 지정
+palette-tokens 240
+palette-tokens --hue 120 --scheme analogous --preview
+
+# hex로 지정
 palette-tokens 6366f1
 
-# Analogous scheme, both light + dark, JSON
-palette-tokens 10b981 --scheme analogous --format json
-palette-tokens 10b981 --scheme analogous --dark --format json
-
-# Full preview
-palette-tokens f59e0b --scheme complementary --format both --preview
+# 다크 모드 + JSON
+palette-tokens 240 --dark --format json
 ```
 
 ## Workflow
